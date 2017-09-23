@@ -1,10 +1,6 @@
 import numpy as np
+import scipy.special as sp
 import matplotlib.pyplot as plt
-
-# import scipy.special as sp
-# scipy is broken in Windows PyCharm environment. Use np.exp instead.
-def sigmoid(x):
-    return 1/(1+np.exp(-x))
 
 class NeuralNetwork:
     def __init__(self, input_nodes, hidden_nodes, output_nodes, learning_rate):
@@ -21,7 +17,8 @@ class NeuralNetwork:
         self.who = np.random.normal(0.0, pow(self.onodes, -0.5), (self.onodes, self.hnodes))
 
         # activation function - sigmoid
-        self.activation_function = lambda x: sigmoid(x)
+        # scipy.special.expit()
+        self.activation_function = lambda x: sp.expit(x)
 
     def train(self, inputs_list, targets_list):
         # same as query()
@@ -83,10 +80,13 @@ test_data.close()
 query_input = test_data_list[np.random.randint(len(test_data_list))].split(',')
 scaled_query_input = (np.asfarray(query_input[1:])/255.0 * 0.99) + 0.01
 
+digit = int(query_input[0])
 # show the digit
-print('Target digit: %s'%(query_input[0]))
+print('Target digit: %d'%(digit))
 # show the output
-print n.query(scaled_query_input)
+result = n.query(scaled_query_input)
+print result
+print result[digit][0] / np.sum(result)
 
 # image_array = np.asfarray(scaled_query_input).reshape((28, 28))
 # plt.imshow(image_array, cmap='binary', interpolation='None')
